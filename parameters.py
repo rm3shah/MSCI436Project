@@ -3,6 +3,7 @@ search_query = 'site:linkedin.com/in/ AND "university of waterloo" AND "manageme
 
 # file were scraped profile information will be stored  
 file_name = 'results_file.csv'
+linkedin_file = 'linkedin_file.csv'
 
 # login credentials
 linkedin_username = 'peaches.hp@gmail.com'
