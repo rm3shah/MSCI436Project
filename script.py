@@ -1,7 +1,7 @@
 # imports
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
-from parsel import Selector
+from bs4 import BeautifulSoup
 import csv
 import time
 import parameters as parameters
@@ -10,7 +10,7 @@ import parameters as parameters
 writer = csv.writer(open(parameters.file_name, 'w'))
 
 # writerow() method to the write to the file object
-writer.writerow(['Name', 'Job Title', 'Company', 'College', 'Location', 'URL'])
+writer.writerow(['URL'])
 
 # specifies the path to the chromedriver.exe
 driver = webdriver.Chrome(executable_path='./chromedriver.exe')
@@ -49,6 +49,7 @@ time.sleep(0.5)
 
 # go back to google
 driver.get('http://google.com')
+
 # locate search form by_name
 search_query = driver.find_element_by_name('q')
 
@@ -59,45 +60,26 @@ search_query.send_keys(parameters.search_query)
 search_query.send_keys(Keys.RETURN)
 time.sleep(0.5)
 
-# locate URL by_class_name
-results = driver.find_elements_by_css_selector('div.g')
+# set max page count for number of searches
+max_page_count = 30
+linkedin_urls = []
 
-for i in range(len(results)):
-    link = results[i].find_elements_by_tag_name("a")
-    href = link[0].get_attribute("href")
+for page in range(max_page_count):
+    # locate URL by_class_name
+    results = driver.find_elements_by_css_selector('div.g')
 
+    for i in range(len(results)):
+        link = results[i].find_elements_by_tag_name("a")
+        linkedin_urls.append(link[0].get_attribute("href"))
 
-linkedin_urls = driver.find_elements_by_class_name('r')
-# print(linkedin_urls)
+    driver.find_element_by_id('pnnext').send_keys(Keys.ENTER)
+    time.sleep(2)
 
-# variable linkedin_url is equal to the list comprehension 
-linkedin_urls = [url.text for url in linkedin_urls]
-time.sleep(2)
-
-print("dfsajdsfjskfjk")
 print(linkedin_urls)
+for url in linkedin_urls:
+    writer.writerow([url])
 
-# For loop to iterate over each URL in the list
-for linkedin_url in linkedin_urls:
-    # get the profile URL 
-    driver.get(linkedin_url)
 
-    # add a 5 second pause loading each URL
-    time.sleep(5)
 
-    # assigning the source code for the webpage to variable sel
-    sel = Selector(text=driver.page_source) 
-
-    # xpath to extract the text from the class containing the name
-    name = sel.xpath('//*[starts-with@id="ember46"]').extract_first()
-    # name = sel.xpath
-
-    if name:
-        name = name.strip()
-
-    print(name)
-
-    linkedin_url = driver.current_url
-
-    driver.close()
+driver.close()
   
