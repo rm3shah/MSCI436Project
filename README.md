@@ -1,2 +1,2 @@
-# MSCI436Project
+# MSCI446Project
 LinkedIn Data Mining
