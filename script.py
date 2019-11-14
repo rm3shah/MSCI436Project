@@ -22,8 +22,9 @@ driver.get('https://www.linkedin.com')
 driver.find_element_by_class_name('nav__button-secondary')
 
 # locate email form by_class_name
-username = driver.find_element_by_xpath('/html/body/nav/section[2]/form/div[1]/div[1]/input')
-# username = driver.find_element_by_name('session_key')
+# username = driver.find_element_by_xpath('/html/body/nav/section[2]/form/div[1]/div[1]/input')
+# username = driver.find_element_by_class_name('input__field input__field--with-label')
+username = driver.find_element_by_name('session_key')
 
 # send_keys() to simulate key strokes
 username.send_keys(parameters.linkedin_username)
@@ -71,15 +72,14 @@ for page in range(max_page_count):
     for i in range(len(results)):
         link = results[i].find_elements_by_tag_name("a")
         linkedin_urls.append(link[0].get_attribute("href"))
+        try:
+            driver.find_element_by_id('pnnext').send_keys(Keys.ENTER)
+            time.sleep(2)
+        except:
+            break
 
-    driver.find_element_by_id('pnnext').send_keys(Keys.ENTER)
-    time.sleep(2)
-
-print(linkedin_urls)
 for url in linkedin_urls:
     writer.writerow([url])
-
-
 
 driver.close()
   
