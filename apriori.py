@@ -73,4 +73,4 @@ def draw_graph(rules, rules_to_show):
   nx.draw_networkx_labels(G1, pos)
   plt.show()
 
-  draw_graph(rules, 6)
+  draw_graph(rules, 10)
