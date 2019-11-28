@@ -1,2 +1,2 @@
 # MSCI446Project
-LinkedIn Data Mining
+Recipe Data Mining
