@@ -1,20 +1,15 @@
 # import libraries
 import pandas as pd
-import numpy as np
 import nltk
 import re
 from nltk.stem import WordNetLemmatizer
 from sklearn.metrics import classification_report, accuracy_score
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.model_selection import GridSearchCV
+from sklearn.model_selection import GridSearchCV, train_test_split
 from sklearn.linear_model import LogisticRegression
 
 
-def clean_data(train, test):
-    # clean data
-    train['ingredients_clean_string'] = [' , '.join(z).strip() for z in train['ingredients']]
-    test['ingredients_clean_string'] = [' , '.join(z).strip() for z in test['ingredients']]
-    
+def lemmatize_data(train, test):
     # lemmatize ingredients  
     train['ingredients_string'] = [' '.join([WordNetLemmatizer().lemmatize(re.sub('[^A-Za-z]', ' ', line)) for line in lists]).strip() for lists in train['ingredients']]       
     test['ingredients_string'] = [' '.join([WordNetLemmatizer().lemmatize(re.sub('[^A-Za-z]', ' ', line)) for line in lists]).strip() for lists in test['ingredients']]  
@@ -28,7 +23,7 @@ def preprocessing():
     true_val = test['cuisine']
     
     # call function to clean data
-    clean_data(train, test)
+    lemmatize_data(train, test)
     
     return train, test, true_val
 
