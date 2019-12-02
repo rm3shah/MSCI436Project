@@ -2,6 +2,7 @@
 import pandas as pd
 import nltk
 import re
+import csv
 from nltk.stem import WordNetLemmatizer
 from sklearn.metrics import classification_report, accuracy_score
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -63,6 +64,9 @@ def logistic_regression(train_predictor, train_target, test_predictor, true_val)
     print(accuracy_score(true_val, prediction))
     print(classification_report(true_val, prediction))
 
+    # create confusion matrix
+    with open('confusion_matrix.csv', 'w') as f:
+        f.write(np.array2string(confusion_matrix(true_val, prediction), separator=', '))
 
 # run all functions
 train, test, true_val = preprocessing()
