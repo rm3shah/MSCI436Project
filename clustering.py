@@ -38,8 +38,21 @@ data.head()
 # train_predictor = vectorize(train)
 # print(train_predictor)
 
-my_stop_words = text.ENGLISH_STOP_WORDS.union(["skinless","boneless","black","shredded","grated","cheese","yolks","purpose","fat","free","baking","toasted","seeds","dried","low","sodium","fresh","zest","juice","italian","crushed","unsalted","sauce","red","green","bell","ground","breasts","chopped","broth","condensed","extract","heavy","whites","large","dry","masala","seed","seasoning","chile","chilies","chiles","white","cloves","long","grain","extra","virgin","sweetened","brown","skim","thai","leaves","whipping","powdered","kosher","purple","soup","olive","powder","lasagna","russet"])
 
+#Define stop words and create TFIDF matrix using cleaned data
+my_stop_words = text.ENGLISH_STOP_WORDS.union(["skinless","boneless","black","shredded","grated",
+    "cheese","yolks","purpose","fat","free","baking","toasted","seeds","dried","low","sodium",
+    "fresh","zest","juice","italian","crushed","unsalted","sauce","red","green","bell","ground",
+    "breasts","chopped","broth","condensed","extract","heavy","whites","large","dry","masala",
+    "seed","seasoning","chile","chilies","chiles","white","cloves","long","grain","extra",
+    "virgin","sweetened","brown","skim","thai","leaves","whipping","powdered","kosher","purple",
+    "soup","olive","powder","lasagna","russet","flat","cooking","spray","halves","stock","meal",
+    "self","rising","wedge","lean","wedges","frozen","starch","half","confectioners","onion","yellow",
+    "smoked","hot","thighs","arborio","breast","sea","orange","melted","unbleached","instant",
+    "active","warm","cherry","pitted","plain","greek","refried","granulated","yukon","gold",
+    "mashed","bittersweet","minced","sticks","paste","fillets","leaf","mix","drippings","cake",
+    "sharp","canola","flakes","dark","light","unsweetened","andouille","diced","pie","evaporated",
+    "egg","mexican","sweet","semi","morsels","semisweet","dough","sliced","cold"])
 tfidf = TfidfVectorizer(
     min_df = 5,
     max_df = 0.95,
@@ -50,9 +63,10 @@ tfidf = TfidfVectorizer(
 tfidf.fit(data.ingredients_clean_string)
 text = tfidf.transform(data.ingredients_clean_string)
 
-clusters = MiniBatchKMeans(n_clusters=len(data.cuisine.unique()), init_size=1024, random_state=20).fit_predict(text)
-# clusters = KMeans(n_clusters=len(data.cuisine.unique())).fit_predict(text)
+# Create clusters for each cuisine using k means
+clusters = KMeans(n_clusters=len(data.cuisine.unique())).fit_predict(text)
 
+# Create scatter plots for clusters using PCA and TSNE
 def plot_tsne_pca(data, labels):
     max_label = max(labels)
     max_items = np.random.choice(range(data.shape[0]), size=3000, replace=False)
@@ -76,6 +90,7 @@ def plot_tsne_pca(data, labels):
 plot_tsne_pca(text, clusters)
 
 
+# Get top 10 keywords for each cluster
 def get_top_keywords(data, clusters, labels, n_terms):
     df = pd.DataFrame(data.todense()).groupby(clusters).mean()
 
@@ -83,4 +98,5 @@ def get_top_keywords(data, clusters, labels, n_terms):
         print('\nCluster {}'.format(i))
         print(','.join([labels[t] for t in np.argsort(r)[-n_terms:]]))
             
-get_top_keywords(text, clusters, tfidf.get_feature_names(), 10)
+get_top_keywords(text, clusters, tfidf.get_feature_names(),10)
+
