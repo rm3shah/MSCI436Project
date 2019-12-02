@@ -79,7 +79,7 @@ def create_rules(cuisine_data):
     frequent_itemsets = apriori(encoded_df, min_support=0.05, use_colnames=True).sort_values('support', ascending=False)
     
     # create association rules
-    rules = association_rules(frequent_itemsets, metric="confidence", min_threshold=0.2)
+    rules = association_rules(frequent_itemsets, metric="confidence", min_threshold=0.2).sort_values('confidence', ascending=False)
     # print(rules[['antecedents', 'consequents', 'support', 'confidence']])
     
     # draw graph
