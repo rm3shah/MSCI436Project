@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import nltk
 import re
+import csv
 from nltk.stem import WordNetLemmatizer
 from sklearn.metrics import classification_report, accuracy_score
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -25,7 +26,6 @@ def preprocessing():
     
     # call function to clean data
     lemmatize_data(train, test)
-    
     return train, test, true_val
 
 def vectorize(train, test):
@@ -37,11 +37,11 @@ def vectorize(train, test):
     # ngram_range = # of words in a sequence
     # max_df = max document frequency, ignore words that exceed this frequency
     # token pattern = regexp used, mandatory if analyzer='word'
-    train_vectorizer = TfidfVectorizer(stop_words='english', ngram_range = ( 1 , 1 ),analyzer="word", max_df = .5, token_pattern=r'\w+')
+    vectorizer = TfidfVectorizer(stop_words='english', ngram_range = ( 1 , 1 ),analyzer="word", max_df = .5, token_pattern=r'\w+')
 
     # return document term matrices fit on respective corpa
-    train_tfidf = train_vectorizer.fit_transform(train_corpus).todense()
-    test_tfidf = train_vectorizer.transform(test_corpus)
+    train_tfidf = vectorizer.fit_transform(train_corpus).todense()
+    test_tfidf = vectorizer.transform(test_corpus)
     
     return train_tfidf, test_tfidf
 
@@ -64,6 +64,9 @@ def logistic_regression(train_predictor, train_target, test_predictor, true_val)
     print(accuracy_score(true_val, prediction))
     print(classification_report(true_val, prediction))
 
+    # create confusion matrix
+    with open('confusion_matrix.csv', 'w') as f:
+        f.write(np.array2string(confusion_matrix(true_val, prediction), separator=', '))
 
 # run all functions
 train, test, true_val = preprocessing()
