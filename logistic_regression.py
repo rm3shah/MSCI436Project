@@ -26,7 +26,6 @@ def preprocessing():
     
     # call function to clean data
     lemmatize_data(train, test)
-
     return train, test, true_val
 
 def vectorize(train, test):
